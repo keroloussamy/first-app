@@ -3,17 +3,24 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-local';
 import { AuthService } from './auth.service';
 
-// Note Strategy from 'passport-local'.
+// Note Strategy parameter from 'passport-local'.
+// 2-Local strategy to check and validate the user email and password. To validate requests with credentials Like Login, we can't use JWT so we use this local strategy.
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
   constructor(private authService: AuthService) {
-    super();
+    super({
+      usernameField: 'email',
+      passwordField: 'password',
+    });
   }
 
-  async validate(username: string, password: string): Promise<any> {
-    const user = await this.authService.validateUser(username, password);
+  async validate(email: string, password: string): Promise<any> {
+    const user = await this.authService.validateUser(email, password);
     if (!user) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException({
+        message:
+          'Invalid credentials, You have entered a wrong email or password',
+      });
     }
     return user;
   }

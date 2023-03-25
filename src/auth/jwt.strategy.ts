@@ -3,7 +3,8 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
 import { jwtConstants } from './constants';
 
-// Note Strategy from 'passport-jwt'.
+// Note Strategy parameter from 'passport-jwt'.
+// 1-JWT strategy to create JWT using a secret constant. To validate requests with JWT technique.
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor() {
@@ -16,7 +17,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   // This function is called by the Passport middleware after a token has been verified, so that the application can retrieve information about the authenticated user.
   async validate(payload: any) {
-    return { userId: payload.sub, username: payload.username };
+    return { userId: payload.userId, email: payload.email };
   }
 }
 
